@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <style>
+
+   </style>
+   <script>
+     "use strict";
+        
+     window.onload = function() {
+        console.log("onload !");
+        class Board {
+          constructor(json) {
+            // Lecture du JSON
+            this.board = ...;
+            this.lineLength = ...;
+            this.rules = new Rules();
+            rules.checkRules(board);
+          }
+
+          getElems(x, y) {
+            return board[x+y*this.lineLength];
+          }
+
+          win() {
+            // ...
+          }
+
+          playedElems() {
+            // ...
+          }
+
+          moveElems(direction) {
+            // ...
+          }
+        }
+
+        class Rules {
+          constructor() {
+            this.rules = {};
+          }
+
+          addRule(element, property) {
+            rules.element = rules.element.push(property);
+          }
+
+          checkRules(board) {
+            // Pour chaque règle trouvée : on l'ajoute dans notre dictionnaire
+          }
+
+          removeRule(element, property) {
+            rules.element = rules.element.splice(rules.indexOf(property), 1);
+          }
+
+          getRule(element) {
+            return rules.element;
+          }
+        }
+
+        class Graphic {
+          drawBoard(board) {
+            // ...
+          }
+
+          removeImage(x, y) {
+            // ...
+          }
+
+          addImage(x, y) {
+            // ...
+          }
+
+          /* ... */
+        }
+
+   </script>
+   <title> Baba Is You </title>
+ </head>
+
+  <body>
+  </body>
+
+</html>

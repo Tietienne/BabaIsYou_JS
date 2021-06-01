@@ -1,0 +1,13 @@
+JSON pour niveaux --> fetch pour la lecture ?
+Tableau x lignes y colonnes : chaque case contient
+Enum : associer nom Elem à nom image
+
+Enum pour chaque type de Mot et un grand Enum Word
+
+Classes :
+- Board : tab[][]
+		  lineLength
+Méthodes : getElems, win ...
+
+- Rules : {élément:[prop1, prop2], élément2:[]}
+Méthodes : addRule, checkRules, remove, get ...
