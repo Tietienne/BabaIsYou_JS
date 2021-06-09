@@ -3,82 +3,272 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
    <style>
-
+    table {
+      min-height: 80%;
+      min-width: 80%;
+    }
    </style>
    <script>
-     "use strict";
+    "use strict";
+
+    const PropertyEnum = {
+      YOU: "You",
+      PUSH: "Push",
+      WIN: "Win",
+      STOP: "Stop"
+    }
+
+    const NameEnum = {
+      BABA: "Baba_Name",
+      FLAG: "Flag_Name",
+      WALL: "Wall_Name",
+      WATER: "Water_Name",
+      ROCK: "Rock_Name"
+    }
+
+    const PlayEnum = {
+      BABA: "Baba_Play",
+      FLAG: "Flag_Play",
+      WALL: "Wall_Play",
+      WATER: "Water_Play",
+      ROCK: "Rock_Play"      
+    }
+
+    class Board {
+      constructor(board, lineLength) {
+        // Lecture du JSON
+        this.board = board; // Tableau de tableau de BoardElem : exemple - [[BaBa, Flower], [], [Lava], [Baba_Name]]
+        this.lineLength = lineLength;
+        this.rules = new Rules();
+        //rules.checkRules(board, lineLength);
+      }
+
+      getElems(index) {
+        return board[index];
+      }
+
+      getColumn() {
+        return this.lineLength;
+      }
+
+      getLine() {
+        return this.board.length / this.lineLength;
+      }
+
+      isOver() {
+        let allRules = this.rules.getAllRules();
+        for (let r in allRules) {
+          for (let p in allRules[r]) {
+            if (p.getName() == "You" && elementExists(r)) {
+              return false;
+            }
+          }
+        }
+        return true;
+      }
+
+      isWin() {
+        let player = playedElements();
+        let winner = winElements();
+        return containsSomething(player, winner);
+      }
+
+      elementExists(boardelem) {
+        for (let i = 0; i < this.board.length; i++) {
+          for (let j = 0; j < this.board[i].length; j++) {
+            if (this.board[i][j].getName() == boardelem.getName()) {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+
+      containsSomething(list1, list2) {
+        let b1 = false;
+        let b2 = false;
+        for (let i = 0; i < this.board.length; i++) {
+          b1 = false;
+          b2 = false;
+          for (let j = 0; j<this.board[i].length; j++) {
+            if (list1.includes(this.board[i][j])) {
+              b1 = true;
+            }
+
+            if (list2.includes(this.board[i][j])) {
+              b2 = true;
+            }
+          }
+          if (b1 && b2) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      addElements(list, prop) {
+        let allRules = this.rules.getAllRules();
+        for (let r in allRules) {
+          for (let p in allRules[r]) {
+            if (p.getName() == prop && elementExists(r)) {
+              list.push(be);
+            }
+          }
+        }
+        return list;
+      }
+
+      playedElements() {
+        return addElements([], "You");
+      }
+
+      winElements() {
+        return addElements([], "Win");
+      }
+
+      moveElems(direction) {
+        // ...
+      }
+    }
+
+    class Rules {
+      constructor() {
+        this.rules = {}; // Du style : {"Nom" : [Prop1, Prop2], "Autre" : [Prop3]}
+      }
+
+      getAllRules() {
+        return this.rules;
+      }
+
+      getRules(element) {
+        return this.rules.element;
+      }
+
+      removeRule(element, property) {
+        rules.element = rules.element.splice(rules.indexOf(property), 1);
+      }
+
+      insertProperties(list, properties) {
+        properties.forEach(property => {
+          if (property!=undefined && !(this.rules.element.includes(property))) {
+            list.push(property);
+          }
+        });
+        return list;
+      }
+
+      checkRules(board, lineLength) {
+        this.rules = {};
+        for (let i = 0; i < board.length; i++) {
+          for (let elem in board[i]) {
+            if (Object.values(NameEnum).includes(elem.getName())) {
+              let properties = checkProperties(i, board, lineLength);
+              let equivalent = elem.equivalent();
+              let l = rules.equivalent;
+              let list = l != null ? l : [];
+              list = insertProperties(list, properties);
+              rules[equivalent] = list;
+            }
+          }
+        }
+      }
+
+      checkProperties(index, board, lineLength) {
+        let properties = [];
+        properties[0] = checkLineRight(index, board, lineLength);
+        properties[1] = checkColumnDown(index, board, lineLength);
+        return properties;
+      }
+
+      checkColumnDown(index, board, lineLength) {
+        if (index+lineLength<board.length) {
+          board[index+lineLength].forEach(elem=> {
+            if (elem.getName()=="Is") {
+              if (index+lineLength+lineLength<board.length) {
+                board[index+lineLength+lineLength].forEach(elem=> {
+                  if (Object.values(PropertyEnum).includes(elem.getName())) {
+                    return elem;
+                  }
+                })
+              }
+            }
+          });
+        }
+        return undefined;
+      }
+
+      checkLineRight(index, board, lineLength) {
+        if (index+1<this.board.length) {
+          board[index+1].forEach(elem=> {
+            if (elem.getName()=="Is") {
+              if (index+1+1<this.board.length) {
+                board[index+1+1].forEach(elem=> {
+                  if (Object.values(PropertyEnum).includes(elem.getName())) {
+                    return elem;
+                  }
+                })
+              }
+            }
+          });
+        }
+        return undefined;
+      }
+    }
+
+    class BoardElem {
+      constructor(name) {
+        this.name = name;
+      }
+
+      getName() {
+        return this.name;
+      }
+    }
+
+    class Graphic {
+      drawBoard(board, table) {
+        let line = board.getLine();
+        let column = board.getColumn();
+        for (let i = 0; i<line; i++) {
+          let tr = document.createElement("TR");
+          for (let j = 0; j<column; j++) {
+            let td = document.createElement("TD");
+            // Ajouter Image en fonction du boardElem
+            tr.appendChild(td);
+          }
+          table.appendChild(tr);
+        }
+      }
+
+      removeImage(x, y) {
+        // ...
+      }
+
+      addImage(x, y) {
+        // ...
+      }
+
+      /* ... */
+    }
         
      window.onload = function() {
         console.log("onload !");
-        class Board {
-          constructor(json) {
-            // Lecture du JSON
-            this.board = ...;
-            this.lineLength = ...;
-            this.rules = new Rules();
-            rules.checkRules(board);
-          }
+        let table = document.getElementById("board");
+        
+        // Lancement du jeu //
 
-          getElems(x, y) {
-            return board[x+y*this.lineLength];
-          }
+        let board = new Board([0,0,0,0,0,0,0,0], 4);
+        let graphic = new Graphic();
 
-          win() {
-            // ...
-          }
-
-          playedElems() {
-            // ...
-          }
-
-          moveElems(direction) {
-            // ...
-          }
-        }
-
-        class Rules {
-          constructor() {
-            this.rules = {};
-          }
-
-          addRule(element, property) {
-            rules.element = rules.element.push(property);
-          }
-
-          checkRules(board) {
-            // Pour chaque règle trouvée : on l'ajoute dans notre dictionnaire
-          }
-
-          removeRule(element, property) {
-            rules.element = rules.element.splice(rules.indexOf(property), 1);
-          }
-
-          getRule(element) {
-            return rules.element;
-          }
-        }
-
-        class Graphic {
-          drawBoard(board) {
-            // ...
-          }
-
-          removeImage(x, y) {
-            // ...
-          }
-
-          addImage(x, y) {
-            // ...
-          }
-
-          /* ... */
-        }
+        graphic.drawBoard(board, table);
+      }
 
    </script>
    <title> Baba Is You </title>
  </head>
 
   <body>
+    <table id="board"></table>
   </body>
 
 </html>
