@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Rapport de projet - Baba Is You</title>
@@ -11,24 +11,26 @@
 
         <h3>Architecture du Projet</h3>
 
-            <p>Nous avons décidé de présenter notre projet à l'aide de 2 clases : Board et Graphic ainsi qu'avec plusieurs dictionnaires dont l'objectif était de simuler des Enumération.<br>
+            <p>Nous avons décidé de représenter notre projet à l'aide de 4 classes : Board, Graphic, Rules et BoardElem ainsi qu'avec plusieurs dictionnaires dont l'objectif était de simuler des Enumération.<br>
             La raison pour lauquelle nous avons choisi cette architecture est que nous pensions intéressant d'utiliser des dictionnaire pour représenter les différents blocs. Certes ils avaient <br>
-            des noms différents mais leur type se divisais en 4 : les noms, les opérateurs, les propriétés et les blocs jouables.<br>
-            Pour ce qui est des classes, le jeu se déroulant autour d'un plateau, il nous a semblé évident de faire une classe Board afin de gérer les différents changements de position, de règles etc...<br>
+            des noms différents mais leur type se divisais en 4 : les noms, les opérateurs, les propriétés et les blocs jouables.<br><br>
+            Pour ce qui est des classes, le jeu se déroulant autour d'un plateau, il nous a semblé évident de faire une classe Board afin de gérer les différents changements de position, les déplacements...<br>
+            La classe BoardElem représente tout simplement n'importe quel type élément de notre plateau. On vient faire les différences grâce aux énumérations.<br>
+            Quant à la classe Rules, elle permet de gérer les différents règles actuelles à appliquer au jeu. Elles se mettent à jour après chaque déplacement.<br>
+            Pour ce qui est de la classe Graphic, elle gére les images et les dessins sur un canvas en fonction des paramètres qu'on lui passe.<br>
             Pour ce qui est des fonctions de lecture de fichier, nous n'avons pas trouvé utile de créer de classe.<br><br>
             </p>
 
         <h3>Problèmes Rencontrés</h3>
 
-            <p>Pendant le projet, nous avons recontré plusieurs problèmes dont un principal : après avoir crée la fonction qui permet de lire le fichier level.json,<br>
-                le tableau contient des chaînes de cractères correspondant aux noms des images à afficher, une autre fonction est alors chargée deles récupérer pour afficher le<br>
-                images en question. Cependant lorsque nous avons lancé le programme, il était impossible de trouver les images ainsi que le répertoire les contenant. Après des recherches<br>
+            <p>Pendant le projet, nous avons recontré plusieurs problèmes dont un principal : après avoir créé la fonction qui permet de lire le fichier level.json,<br>
+                le tableau contient des chaînes de cractères correspondant aux noms des images à afficher, une autre fonction est alors chargée de les récupérer pour afficher les<br>
+                images en question.<br> Cependant lorsque nous avons lancé le programme, il était impossible de trouver les images ainsi que le répertoire les contenant. Après des recherches<br>
                 sur plusieurs pistes, nous avons trouvé la solution : dans le fichier JExpress.java, il suffisait de rajouter un bloc de code permettant au serveur de prendre en compte les images<br>
-                et plus précisement les .gif dans notre cas.
+                et plus précisement les .gif dans notre cas. <br><br>
                 Le second problème a été pour la boucle principale permettant, à chaque fin de niveau de lancer le suivant. Nous avons tenté de faire des boucles basiques cependant soit le problème<br>
                 s'aggravait en faisant planter le serveur et parfois la machine, soit les niveaux se superposaient ne gardant que les règles du premier.<br>
                 Au final nous avons utilisé une variable globale qui évoluais en fonction des niveaux terminés et le programme relance le fetch() principal à chaque fin de niveau.
             </p>
-
 </body>
 </html>
