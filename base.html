@@ -392,7 +392,8 @@
         
     window.onload = function() {
         console.log("onload !");
-        let table = document.getElementById("board");
+        let table = document.createElement("table");
+        let canvas = document.getElementById("canvas");
 
         function fillBoard(table){
             let board = [];
@@ -425,14 +426,14 @@
                 let board = new Board(tab, object['width']);
                 let graphic = new Graphic();
 
-                table.height = (window.innerHeight * 80) / 100;
-                table.width = (window.innerWidth * 80) / 100;
-                graphic.drawBoard(board, table);
+                canvas.height = (window.innerHeight * 80) / 100;
+                canvas.width = (window.innerWidth * 80) / 100;
+                graphic.drawBoard(board, canvas);
 
                 document.onkeydown = (event) => {
                     if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
                         board.moveElems(event.key);
-                        graphic.drawBoard(board, table);
+                        graphic.drawBoard(board, canvas);
                         if (board.win()) {
                           console.log("Victoire !");
                           document.onkeydown = undefined;
@@ -451,7 +452,7 @@
  </head>
 
   <body>
-    <canvas id="board"></canvas>
+    <canvas id="canvas"></canvas>
   </body>
 
 </html>
