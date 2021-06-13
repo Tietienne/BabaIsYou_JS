@@ -2,6 +2,26 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <style>
+        h1, h2{
+            text-align: center;
+        }
+
+        h3, h2, h1{
+            text-decoration: underline;
+        }
+
+        .architecture{
+            margin: 10px;
+            padding: 25px;
+        }
+
+        .problem{
+            margin: 10px;
+            padding: 25px;
+        }
+
+    </style>
     <title>Rapport de projet - Baba Is You</title>
 </head>
 <body>
@@ -9,6 +29,7 @@
 
         <h2>Etienne ALEXANDRE / Guillaume DOMART</h2>
 
+    <div class="architecture">
         <h3>Architecture du Projet</h3>
 
             <p>Nous avons décidé de représenter notre projet à l'aide de 4 classes : Board, Graphic, Rules et BoardElem ainsi qu'avec plusieurs dictionnaires dont l'objectif était de simuler des Enumération.<br>
@@ -20,7 +41,8 @@
             Pour ce qui est de la classe Graphic, elle gére les images et les dessins sur un canvas en fonction des paramètres qu'on lui passe.<br>
             Pour ce qui est des fonctions de lecture de fichier, nous n'avons pas trouvé utile de créer de classe.<br><br>
             </p>
-
+    </div>
+    <div class="problem">
         <h3>Problèmes Rencontrés</h3>
 
             <p>Pendant le projet, nous avons recontré plusieurs problèmes dont un principal : après avoir créé la fonction qui permet de lire le fichier level.json,<br>
@@ -32,5 +54,7 @@
                 s'aggravait en faisant planter le serveur et parfois la machine, soit les niveaux se superposaient ne gardant que les règles du premier.<br>
                 Au final nous avons utilisé une variable globale qui évoluais en fonction des niveaux terminés et le programme relance le fetch() principal à chaque fin de niveau.
             </p>
+    </div>
+
 </body>
 </html>
