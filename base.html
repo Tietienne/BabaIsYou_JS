@@ -3,9 +3,16 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
    <style>
-    table {
-      min-height: 80%;
-      min-width: 80%;
+    canvas {
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: auto;
+      margin-bottom: auto;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
     }
    </style>
    <script>
@@ -40,7 +47,7 @@
         this.board = board; // Tableau de tableau de BoardElem : exemple - [[BaBa, Flower], [], [Lava], [Baba_Name]]
         this.lineLength = lineLength;
         this.rules = new Rules();
-        //rules.checkRules(board, lineLength);
+        this.rules.checkRules(board, lineLength);
       }
 
       getElems(index) {
@@ -58,8 +65,8 @@
       isOver() {
         let allRules = this.rules.getAllRules();
         for (let r in allRules) {
-          for (let p in allRules[r]) {
-            if (p.getName() == "You" && elementExists(r)) {
+          for (let p of allRules[r]) {
+            if (p.getName() == "You" && this.elementExists(r)) {
               return false;
             }
           }
@@ -76,7 +83,7 @@
       elementExists(boardelem) {
         for (let i = 0; i < this.board.length; i++) {
           for (let j = 0; j < this.board[i].length; j++) {
-            if (this.board[i][j].getName() == boardelem.getName()) {
+            if (this.board[i][j].getName() == boardelem) {
               return true;
             }
           }
@@ -109,9 +116,9 @@
       addElements(list, prop) {
         let allRules = this.rules.getAllRules();
         for (let r in allRules) {
-          for (let p in allRules[r]) {
-            if (p.getName() == prop && elementExists(r)) {
-              list.push(be);
+          for (let p of allRules[r]) {
+            if (p.getName() == prop && this.elementExists(r)) {
+              list.push(new BoardElem(r));
             }
           }
         }
@@ -119,15 +126,102 @@
       }
 
       playedElements() {
-        return addElements([], "You");
+        return this.addElements([], "You");
       }
 
       winElements() {
-        return addElements([], "Win");
+        return this.addElements([], "Win");
+      }
+
+      isDisabled(be) {
+        console.log(be);
+        let r = this.rules.getRules(be);
+        return (r == null || r.length == 0) && Object.values(PlayEnum).includes(be.getName());
+      }
+
+      isPushable(be) {
+        let r = this.rules.getRules(be);
+        if (r == null) {
+          return !Object.values(PlayEnum).includes(be.getName());
+        }
+        return r.includes(new BoardElem("Push")) || r.includes(new BoardElem("You")) || !Object.values(PlayEnum).includes(be.getName());
       }
 
       moveElems(direction) {
-        // ...
+        let elements = this.playedElements();
+        this.chooseDirectionAndMove(direction, elements);
+        this.rules.checkRules(this.board, this.lineLength);
+      }
+
+      chooseDirectionAndMove(direction, elements) {
+        if (direction == "ArrowDown" || direction == "ArrowRight") {
+          this.moveElementsDownRight(elements, direction);
+        } else {
+          this.moveElementsUpLeft(elements, direction);
+        }
+      }
+
+      moveElementsDownRight(elements, direction) {
+        for (let i = this.board.length - 1; i >= 0; i--) {
+          this.moveIterator(elements, direction, i);
+        }
+      }
+
+      moveElementsUpLeft(elements, direction) {
+        for (let i = 0; i < this.board.length; i++) {
+          this.moveIterator(elements, direction, i);
+        }
+      }
+
+      moveIterator(elements, direction, i) {
+        for (let j = this.board[i].length-1; j>=0; j--) {
+          let be = this.board[i][j];
+          for (let elem of elements) {
+            if (elem.getName() == be.getName()) {
+              this.checkMoveRec(direction, be, i, j);
+            }
+          }
+        }
+      }
+
+      checkMoveRec(direction, w, i, j) {
+        let newPosition = this.translateDirection(direction, i);
+        if (i == newPosition)
+          return false;
+        for (let k = this.board[newPosition].length-1; k>=0; k--) {
+          let be = this.board[newPosition][k];
+          if (!this.isDisabled(be)) {
+            if (this.isPushable(be)) {
+              if (!this.checkMoveRec(direction, be, newPosition, k)) {
+                return false;
+              }
+              continue;
+            }
+            return false;
+          }
+        }
+        this.board[i].splice(j, 1);
+        this.board[newPosition].push(w);
+        return true;
+      }
+
+      translateDirection(direction, previousPosition) {
+        let newPosition = null;
+        switch (direction) {
+          case "ArrowUp":
+            newPosition = Math.floor(previousPosition / this.lineLength) == 0 ? previousPosition : previousPosition - this.lineLength;
+            break;
+          case "ArrowDown":
+            newPosition = Math.floor(previousPosition / this.lineLength) == this.getLine() - 1 ? previousPosition : previousPosition + this.lineLength;
+            break;
+          case "ArrowLeft":
+            newPosition = previousPosition % this.lineLength == 0 ? previousPosition : previousPosition - 1;
+            break;
+          case "ArrowRight":
+            newPosition = previousPosition % this.lineLength == this.lineLength - 1 ? previousPosition : previousPosition + 1;
+            break;
+        }
+        return newPosition;
       }
     }
 
@@ -149,25 +243,25 @@
       }
 
       insertProperties(list, properties) {
-        properties.forEach(property => {
-          if (property!=undefined && !(this.rules.element.includes(property))) {
-            list.push(property);
+        for (let prop of properties) {
+          if (prop!=undefined && !(list.includes(prop))) {
+            list.push(prop);
           }
-        });
+        }
         return list;
       }
 
       checkRules(board, lineLength) {
         this.rules = {};
         for (let i = 0; i < board.length; i++) {
-          for (let elem in board[i]) {
+          for (let elem of board[i]) {
             if (Object.values(NameEnum).includes(elem.getName())) {
-              let properties = checkProperties(i, board, lineLength);
+              let properties = this.checkProperties(i, board, lineLength);
               let equivalent = elem.equivalent();
-              let l = rules.equivalent;
+              let l = this.rules.equivalent;
               let list = l != null ? l : [];
-              list = insertProperties(list, properties);
-              rules[equivalent] = list;
+              list = this.insertProperties(list, properties);
+              this.rules[equivalent] = list;
             }
           }
         }
@@ -175,41 +269,41 @@
 
       checkProperties(index, board, lineLength) {
         let properties = [];
-        properties[0] = checkLineRight(index, board, lineLength);
-        properties[1] = checkColumnDown(index, board, lineLength);
+        properties.push(this.checkLineRight(index, board, lineLength));
+        properties.push(this.checkColumnDown(index, board, lineLength));
         return properties;
       }
 
       checkColumnDown(index, board, lineLength) {
         if (index+lineLength<board.length) {
-          board[index+lineLength].forEach(elem=> {
-            if (elem.getName()=="Is") {
+          for (let e1 of board[index+lineLength]) {
+            if (e1.getName()=="Is") {
               if (index+lineLength+lineLength<board.length) {
-                board[index+lineLength+lineLength].forEach(elem=> {
-                  if (Object.values(PropertyEnum).includes(elem.getName())) {
-                    return elem;
+                for (let e2 of board[index+lineLength+lineLength]) {
+                  if (Object.values(PropertyEnum).includes(e2.getName())) {
+                    return e2;
                   }
-                })
+                }
               }
             }
-          });
+          }
         }
         return undefined;
       }
 
       checkLineRight(index, board, lineLength) {
-        if (index+1<this.board.length) {
-          board[index+1].forEach(elem=> {
-            if (elem.getName()=="Is") {
-              if (index+1+1<this.board.length) {
-                board[index+1+1].forEach(elem=> {
-                  if (Object.values(PropertyEnum).includes(elem.getName())) {
-                    return elem;
+        if (index+1<board.length) {
+          for (let e1 of board[index+1]) {
+            if (e1.getName()=="Is") {
+              if (index+1+1+lineLength<board.length) {
+                for (let e2 of board[index+1+1]) {
+                  if (Object.values(PropertyEnum).includes(e2.getName())) {
+                    return e2;
                   }
-                })
+                }
               }
             }
-          });
+          }
         }
         return undefined;
       }
@@ -223,52 +317,72 @@
       getName() {
         return this.name;
       }
+
+      equivalent() {
+        if (this.name.includes("_Name")) {
+          return this.name.replace('_Name', '_Play')
+        }
+        return this.name;
+      }
     }
 
     class Graphic {
       drawBoard(board, table) {
+        this.cleanBoard(table);
+        let context = table.getContext("2d");
+        context.fillStyle="black";
+        context.fillRect(0,0, table.width, table.height);
         let line = board.getLine();
         let column = board.getColumn();
         for (let i = 0; i<line; i++) {
-          let tr = document.createElement("TR");
           for (let j = 0; j<column; j++) {
-            let td = document.createElement("TD");
-            // Ajouter Image en fonction du boardElem
-            tr.appendChild(td);
+            for (let k = 0; k<board.board[(i*column)+j].length; k++) {
+              this.addImage(context, board.board[(i*column)+j][k].getName(), i, j, line, column);
+            }
           }
-          table.appendChild(tr);
         }
       }
 
-      removeImage(x, y) {
-        // ...
+      addImage(context, name, i, j, line, column) {
+        let img = new Image(24, 24);
+        img.src = "pictures/"+name+".gif";
+        let mid_height = (context.canvas.height - 24 * line) / 2;
+        let mid_width = (context.canvas.width - 24 * column) / 2;
+        img.onload = () => context.drawImage(img, mid_height + j * 24, mid_width + i * 24);
       }
 
-      addImage(x, y) {
-        // ...
+      cleanBoard(table) {
+        let context = table.getContext('2d');
+        context.clearRect(0, 0, table.width, table.height);
       }
-
-      /* ... */
     }
         
-     window.onload = function() {
-        console.log("onload !");
-        let table = document.getElementById("board");
+    window.onload = function() {
+      console.log("onload !");
+      let table = document.getElementById("board");
         
-        // Lancement du jeu //
+      // Lancement du jeu //
 
-        let board = new Board([0,0,0,0,0,0,0,0], 4);
-        let graphic = new Graphic();
+      let board = new Board([[],[],[],[],[new BoardElem("Baba_Name")],[new BoardElem("Is")],[new BoardElem("You")],[],[new BoardElem("Baba_Play")],[],[],[]], 4);
+      let graphic = new Graphic();
 
-        graphic.drawBoard(board, table);
+      table.width = (window.innerWidth*80)/100;
+      table.height = (window.innerHeight*80)/100;
+      graphic.drawBoard(board, table);
+
+      document.onkeydown = (event) => {
+        if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
+          board.moveElems(event.key);
+          graphic.drawBoard(board, table);
+        }
       }
-
+    }
    </script>
    <title> Baba Is You </title>
  </head>
 
   <body>
-    <table id="board"></table>
+    <canvas id="board"></canvas>
   </body>
 
 </html>
