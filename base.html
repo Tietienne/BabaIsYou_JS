@@ -401,15 +401,15 @@
         let board = new Board(tab, 33);
         let graphic = new Graphic();
 
+        table.height = (window.innerHeight * 80) / 100;
+        table.width = (window.innerWidth * 80) / 100;
         graphic.drawBoard(board, table);
-        board.moveElems(event.key);
-        if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
 
+        document.onkeydown = (event) => {
+          if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
+            board.moveElems(event.key);
             graphic.drawBoard(board, table);
-            table.height = (window.innerHeight * 80) / 100;
-            table.width = (window.innerWidth * 80) / 100;
-            document.onkeydown = (event) => {
-            }
+          }
         }
     }
    </script>
