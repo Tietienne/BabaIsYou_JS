@@ -18,6 +18,9 @@
    <script>
     "use strict";
 
+/**
+     * Enumeration of all Property Blocks existing
+     */
     const PropertyEnum = {
       YOU: "You",
       PUSH: "Push",
@@ -25,6 +28,9 @@
       STOP: "Stop"
     }
 
+    /**
+     * Enumeration of all Name Blocks existing
+     */
     const NameEnum = {
       BABA: "Baba_Name",
       FLAG: "Flag_Name",
@@ -35,6 +41,9 @@
       GRASS: "Grass_Name"
     }
 
+    /**
+     * Enumeration of all PlayableElem existing
+     */
     const PlayEnum = {
       BABA: "Baba_Play",
       FLAG: "Flag_Play",
@@ -46,6 +55,10 @@
     }
 
     class Board {
+      /**
+       * Make a Board from an Array of Array of BoardElem;
+       * @class
+       */
       constructor(board, lineLength) {
         this.board = board;
         this.lineLength = lineLength;
@@ -53,18 +66,26 @@
         this.rules.checkRules(board, lineLength);
       }
 
-      getElems(index) {
-        return board[index];
-      }
-
+      /**
+       * Method to return the number of columns
+       * @return {number} Number of columns
+       */
       getColumn() {
         return this.lineLength;
       }
 
+      /**
+       * Method to return the number of lines
+       * @return {number} Number of lines
+       */
       getLine() {
         return this.board.length / this.lineLength;
       }
 
+      /**
+       * Method to check if the game is over
+       * @return {boolean} true if it's over, false if not
+       */
       isOver() {
         let allRules = this.rules.getAllRules();
         for (let r in allRules) {
@@ -77,12 +98,20 @@
         return true;
       }
 
+      /**
+       * Method to check if the game is win
+       * @return {boolean} true if it's win, false if not
+       */
       win() {
         let player = this.playedElements();
         let winner = this.winElements();
         return this.containsSomething(player, winner);
       }
 
+      /**
+       * Method to check if the BoardElem exists in the Board
+       * @return {boolean} true if it exists, false if not
+       */
       elementExists(boardelem) {
         for (let i = 0; i < this.board.length; i++) {
           for (let j = 0; j < this.board[i].length; j++) {
@@ -94,6 +123,12 @@
         return false;
       }
 
+      /**
+       * Method to check if two elements of 2 lists on the board are at the same position
+       * @param   {array}   A first array with BoardElem
+       * @param   {array}   A second array with BoardElem
+       * @return  {boolean} true if it exists, false if not
+       */
       containsSomething(list1, list2) {
         let b1 = false;
         let b2 = false;
@@ -121,6 +156,12 @@
         return false;
       }
 
+      /**
+       * Method to add an Element in an array if it owns a specific Property
+       * @param   {array}   The array used to insert BoardElem
+       * @param   {prop}    The property that BoardElem needs to own
+       * @return  {array}   The list with BoardElem added
+       */
       addElements(list, prop) {
         let allRules = this.rules.getAllRules();
         for (let r in allRules) {
@@ -133,19 +174,37 @@
         return list;
       }
 
+      /**
+       * Method to get all played BoardElem (who owns Property "You")
+       * @return {array} Array of BoardElem with Property "You"
+       */
       playedElements() {
         return this.addElements([], "You");
       }
 
+      /**
+       * Method to get all Win BoardElem (who owns Property "Win")
+       * @return {array} Array of BoardElem with Property "Win"
+       */
       winElements() {
         return this.addElements([], "Win");
       }
 
+      /**
+       * Method to check if a BoardElem is disabled
+       * @param   {BoardElem} BoardElem to test
+       * @return  {boolean}   true if the BoardElem is disabled, false if not
+       */
       isDisabled(be) {
         let r = this.rules.getRules(be.getName());
         return (r == undefined || r.length == 0) && Object.values(PlayEnum).includes(be.getName());
       }
 
+      /**
+       * Method to check if a BoardElem is pushable
+       * @param   {BoardElem} BoardElem to test
+       * @return  {boolean}   true if the BoardElem is pushable, false if not
+       */
       isPushable(be) {
         let r = this.rules.getRules(be.getName());
         if (r == undefined) {
@@ -159,6 +218,11 @@
         return false;
       }
 
+      /**
+       * Method to check if a BoardElem owns the "Win" Property
+       * @param   {BoardElem} BoardElem to test
+       * @return  {boolean}   true if the BoardElem owns "Win", false if not
+       */
       isWin(be) {
         for (let e of this.winElements()) {
           if (be.getName()==e.getName()) {
@@ -168,6 +232,11 @@
         return false;
       }
 
+      /**
+       * Method to check if a BoardElem owns the "You" Property
+       * @param   {BoardElem} BoardElem to test
+       * @return  {boolean}   true if the BoardElem owns "You", false if not
+       */
       isYou(be) {
         for (let e of this.playedElements()) {
           if (be.getName()==e.getName()) {
@@ -177,12 +246,21 @@
         return false;
       }
 
+      /**
+       * Method to move played BoardElems in a direction 
+       * @param {String} The direction (with keyboard arrows)
+       */
       moveElems(direction) {
         let elements = this.playedElements();
         this.chooseDirectionAndMove(direction, elements);
         this.rules.checkRules(this.board, this.lineLength);
       }
 
+      /**
+       * Method to select which method to use for moving 
+       * @param {String}  The direction (with keyboard arrows)
+       * @param {array}   An array of played BoardElem
+       */
       chooseDirectionAndMove(direction, elements) {
         if (direction == "ArrowDown" || direction == "ArrowRight") {
           this.moveElementsDownRight(elements, direction);
@@ -191,18 +269,34 @@
         }
       }
 
+      /**
+       * Method to move played BoardElems in the Down or Right direction
+       * @param {String}  The direction (with keyboard arrows)
+       * @param {array}   An array of played BoardElem
+       */
       moveElementsDownRight(elements, direction) {
         for (let i = this.board.length - 1; i >= 0; i--) {
           this.moveIterator(elements, direction, i);
         }
       }
 
+      /**
+       * Method to move played BoardElems in the Up or Left direction
+       * @param {String}  The direction (with keyboard arrows)
+       * @param {array}   An array of played BoardElem
+       */
       moveElementsUpLeft(elements, direction) {
         for (let i = 0; i < this.board.length; i++) {
           this.moveIterator(elements, direction, i);
         }
       }
 
+      /**
+       * Method to move played BoardElems of an index in the board
+       * @param {String}  The direction (with keyboard arrows)
+       * @param {array}   An array of played BoardElem
+       * @param {number}  The index in board
+       */
       moveIterator(elements, direction, i) {
         for (let j = this.board[i].length-1; j>=0; j--) {
           let be = this.board[i][j];
@@ -214,6 +308,14 @@
         }
       }
 
+      /**
+       * Recursive method to check and move played and pushable BoardElems in a direction
+       * @param   {String}    The direction (with keyboard arrows)
+       * @param   {BoardElem} The BoardElem to move
+       * @param   {number}    The index of the BoardElem to move
+       * @param   {number}    The next index of the BoardElem if he is moved
+       * @return  {boolean}   true if it can move, false if not
+       */
       checkMoveRec(direction, w, i, j) {
         let newPosition = this.translateDirection(direction, i);
         if (i == newPosition)
@@ -238,6 +340,12 @@
         return true;
       }
 
+      /**
+       * Method to translate a direction with keyboard arrows to an index
+       * @param   {String}  The direction (with keyboard arrows)
+       * @param   {number}  The index before moving
+       * @return  {number}  The index after moving
+       */
       translateDirection(direction, previousPosition) {
         let newPosition = null;
         switch (direction) {
@@ -259,22 +367,37 @@
     }
 
     class Rules {
+      /**
+       * Make a set Rules where a String is Associated to BoardElem Properties
+       * @class
+       */
       constructor() {
-        this.rules = {}; // Du style : {"Nom" : [Prop1, Prop2], "Autre" : [Prop3]}
+        this.rules = {};
       }
 
+      /**
+       * Method to return all the rules
+       * @return {dictionary} Dictionary of rules
+       */
       getAllRules() {
         return this.rules;
       }
 
+      /**
+       * Method to return all rules of a specific BoardElem
+       * @param   {String}  Name of a BoardElem
+       * @return  {array}   An array of Properties BoardElem
+       */
       getRules(element) {
         return this.rules[element];
       }
 
-      removeRule(element, property) {
-        rules.element = rules.element.splice(rules.indexOf(property), 1);
-      }
-
+      /**
+       * Method to insert a Property BoardElem in a list
+       * @param   {array} The list where to insert the Property
+       * @param   {array} An array of Properties BoardElem to insert
+       * @return  {array} The list with all properties in it
+       */
       insertProperties(list, properties) {
         for (let prop of properties) {
           if (prop!=undefined && !(list.includes(prop))) {
@@ -284,6 +407,11 @@
         return list;
       }
 
+      /**
+       * Method to check and update all the rules in the Board
+       * @param {array}   An array representing the Board
+       * @param {number}  The length of a line in the Board
+       */
       checkRules(board, lineLength) {
         this.rules = {};
         for (let i = 0; i < board.length; i++) {
@@ -300,6 +428,13 @@
         }
       }
 
+      /**
+       * Method to return an array with Properties associated to the Name BoardElem at a specific index
+       * @param   {number}  The index of the Name BoardElem to check
+       * @param   {array}   An array representing the Board
+       * @param   {number}  The length of a line in the Board
+       * @return  {array}   An array of Properties BoardElem or undefined
+       */
       checkProperties(index, board, lineLength) {
         let properties = [];
         properties.push(this.checkLineRight(index, board, lineLength));
@@ -307,6 +442,13 @@
         return properties;
       }
 
+      /**
+       * Method to return a Property associated to the Name BoardElem at a specific index
+       * @param   {number}    The index of the Name BoardElem to check
+       * @param   {array}     An array representing the Board
+       * @param   {number}    The length of a line in the Board
+       * @return  {BoardElem} A Property BoardElem or undefined
+       */
       checkColumnDown(index, board, lineLength) {
         if (index+lineLength<board.length) {
           for (let e1 of board[index+lineLength]) {
@@ -324,6 +466,13 @@
         return undefined;
       }
 
+      /**
+       * Method to return a Property associated to the Name BoardElem at a specific index
+       * @param   {number}    The index of the Name BoardElem to check
+       * @param   {array}     An array representing the Board
+       * @param   {number}    The length of a line in the Board
+       * @return  {BoardElem} A Property BoardElem or undefined
+       */
       checkLineRight(index, board, lineLength) {
         if (index+1<board.length) {
           for (let e1 of board[index+1]) {
@@ -343,14 +492,26 @@
     }
 
     class BoardElem {
+      /**
+       * Make a BoardElem from a String
+       * @class
+       */
       constructor(name) {
         this.name = name;
       }
 
+      /**
+       * Method to return the name of the BoardElem
+       * @return {String} The name of the BoardElem
+       */
       getName() {
         return this.name;
       }
 
+      /**
+       * Method to return the equivalent of Name BoardElem as a PlayableElem
+       * @return {String} The equivalent name of a Name BoardElem as PlayableElem BoardElem
+       */
       equivalent() {
         if (this.name.includes("_Name")) {
           return this.name.replace('_Name', '_Play')
@@ -360,11 +521,17 @@
     }
 
     class Graphic {
-      drawBoard(board, table) {
-        this.cleanBoard(table);
-        let context = table.getContext("2d");
+
+      /**
+       * Method to draw all BoardElem as Images on a canvas
+       * @param {Board}   Board instance
+       * @param {Canvas}  The canvas where to draw
+       */
+      drawBoard(board, canvas) {
+        this.cleanBoard(canvas);
+        let context = canvas.getContext("2d");
         context.fillStyle="black";
-        context.fillRect(0,0, table.width, table.height);
+        context.fillRect(0,0, canvas.width, canvas.height);
         let line = board.getLine();
         let column = board.getColumn();
         for (let i = 0; i<line; i++) {
@@ -376,6 +543,15 @@
         }
       }
 
+      /**
+       * Method to draw an Image on a canvas at a specific place
+       * @param {Context} A context of a canvas
+       * @param {String}  The name of a BoardElem
+       * @param {number}  The index i
+       * @param {number}  The index j
+       * @param {number}  The number of lines
+       * @param {number}  The number of columns
+       */
       addImage(context, name, i, j, line, column) {
         let img = new Image(24, 24);
         img.src = "pictures/"+name+".gif";
@@ -384,23 +560,29 @@
         img.onload = () => context.drawImage(img, mid_width + j * 24, mid_height + i * 24);
       }
 
-      cleanBoard(table) {
-        let context = table.getContext('2d');
-        context.clearRect(0, 0, table.width, table.height);
+      /**
+       * Method to clean the canvas
+       * @param {Canvas} The Canvas instance
+       */
+      cleanBoard(canvas) {
+        let context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
       }
     }
         
     window.onload = function() {
         console.log("onload !");
-        let level = 1, game = 1;
+        let level = 1;
         let table = document.createElement("table");
         let canvas = document.getElementById("canvas");
 
-        while(level <= 3 || game == 1){
-            game = mainGame(level);
-            level++;
-        }
+        mainGame(level);
 
+        /**
+         * Function to fill an array from a table
+         * @param   {Table} A table instance
+         * @return  {array} An array filled from the table
+         */
         function fillBoard(table){
             let board = [];
 
@@ -414,6 +596,10 @@
             return board;
         }
 
+        /**
+         * The recursive main function to launch the game and play level 1 to 3
+         * @param {number} The level played
+         */
         function mainGame(level) {
             fetch('level' + level + '.json')
                 .then(response => {
@@ -423,6 +609,7 @@
                     throw Error(response.statusText);
                 })
                 .then(object => {
+                    table.innerHTML = "";
                     for (let i = 0; i < object['lines'].length; i++) {
                         let tr = document.createElement("tr");
                         tr.innerText = object['lines'][i];
@@ -444,12 +631,15 @@
                             if (board.win()) {
                                 console.log("Victoire !");
                                 document.onkeydown = undefined;
-                                return 1;
+                                level += 1; 
+                                if (level<4) {
+                                  mainGame(level);
+                                }
                             }
                             if (board.isOver()) {
                                 console.log("Défaite !");
                                 document.onkeydown = undefined;
-                                return 0;
+                                mainGame(level);
                             }
                         }
                     }
