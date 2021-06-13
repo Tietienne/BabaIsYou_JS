@@ -361,9 +361,44 @@
         console.log("onload !");
         let table = document.getElementById("board");
 
+        function readJson(file) {
+            fetch(file)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw Error(response.statusText);
+                })
+                .then(object => {
+                    for(let i = 0; i < object['lines'].length; i++){
+                        let tr = document.createElement("tr");
+                        for(let j = 0; j < object['lines'][i]['elements'].length; j++){
+                            let td = document.createElement("td");
+                            td.innerText = object['lines'][i]['elements'][j];
+                            tr.append(td);
+                        }
+                        table.appendChild(tr);
+                    }
+                })
+        }
+
+        function fillBoard(){
+            let board = [];
+
+            for(let i = 0; i < table.children.length; i++){
+                board.concat(new BoardElem(table.children[i]));
+            }
+
+            return board;
+        }
+
+        readJson('level.json');
+
+        let tab = fillBoard();
+
         // Lancement du jeu //
 
-        let board = new Board([[], [], [], [], [new BoardElem("Baba_Name")], [new BoardElem("Is")], [new BoardElem("You")], [], [new BoardElem("Baba_Play")], [], [], []], 4);
+        let board = new Board(tab, 33);
         let graphic = new Graphic();
 
         graphic.drawBoard(board, table);
