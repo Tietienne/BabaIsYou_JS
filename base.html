@@ -383,16 +383,13 @@
             })
             .then(object => {
                 for(let i = 0; i < object['lines'].length; i++){
-                    for(let j = 0; j < object['lines'][i]['elements'].length; j++){
-                        let tr = document.createElement("tr");
-                        tr.innerText = object['lines'][i]['elements'][j];
-                        table.appendChild(tr);
-                    }
+                    let tr = document.createElement("tr");
+                    tr.innerText = object['lines'][i];
+                    table.appendChild(tr);
                 }
                 let tab = fillBoard(table);
-                console.log(tab);
 
-                let board = new Board(tab, 33);
+                let board = new Board(tab, object['width']);
                 let graphic = new Graphic();
 
                 table.height = (window.innerHeight * 80) / 100;
