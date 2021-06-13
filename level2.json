@@ -1,0 +1,25 @@
+{
+  "Board": "Level2",
+  "width" : 24,
+  "height" : 18,
+  "lines" : [
+    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    "", "", "", "", "", "", "", "Grass_Play", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    "", "", "", "", "", "", "", "", "", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "", "", "", "", "", "", "",
+    "", "", "", "", "", "", "", "", "", "Wall_Play", "", "", "", "", "", "", "Wall_Play", "", "", "", "", "", "Grass_Play", "",
+    "", "", "", "", "", "", "", "", "", "Wall_Play", "", "", "", "", "", "", "Wall_Play", "Grass_Play", "", "", "", "", "", "",
+    "", "", "", "", "", "", "", "", "", "Wall_Play", "", "Is", "", "", "", "", "Wall_Play", "", "Grass_Play", "", "", "", "", "",
+    "", "", "", "", "", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "", "", "", "", "Win", "", "Wall_Play", "", "", "", "", "", "", "",
+    "", "", "", "", "", "Wall_Play", "Floor_Play", "Floor_Play", "Floor_Play", "Floor_Play", "", "", "", "", "", "", "Wall_Play", "", "", "", "Grass_Play", "", "", "",
+    "", "Grass_Play", "", "", "", "Wall_Play", "Floor_Play", "Flag_Name", "Floor_Play", "Floor_Play", "", "Flag_Play", "", "", "", "", "Wall_Play", "", "", "", "", "", "", "",
+    "", "", "Grass_Play", "", "", "Wall_Play", "Floor_Play", "Floor_Play", "Floor_Play", "Floor_Play", "", "", "", "", "", "", "Wall_Play", "", "", "", "", "", "", "",
+    "", "", "", "", "", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "", "", "", "", "", "", "",
+    "", "", "", "", "", "", "", "", "", "Wall_Play", "", "", "", "", "", "", "Wall_Play", "", "", "", "", "", "", "",
+    "", "", "", "", "", "", "Baba_Name", "", "", "Wall_Play", "", "Wall_Name", "", "", "", "", "Wall_Play", "", "", "", "", "Grass_Play", "", "",
+    "", "", "", "", "", "", "Is", "", "", "Wall_Play", "", "Is", "", "", "Baba_Play", "", "Wall_Play", "", "", "", "Grass_Play", "Grass_Play", "", "",
+    "", "", "", "", "", "", "You", "", "", "Wall_Play", "", "Stop", "", "", "", "", "Wall_Play", "", "", "", "", "", "", "",
+    "", "", "Grass_Play", "", "", "", "", "", "", "Wall_Play", "", "", "", "", "", "", "Wall_Play", "", "", "", "", "", "", "",
+    "", "", "", "", "", "", "", "", "", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "Wall_Play", "", "", "Grass_Play", "", "", "", "",
+    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+  ]
+}
