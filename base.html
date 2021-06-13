@@ -366,15 +366,17 @@
       let board = new Board([[],[],[],[],[new BoardElem("Baba_Name")],[new BoardElem("Is")],[new BoardElem("You")],[],[new BoardElem("Baba_Play")],[],[],[]], 4);
       let graphic = new Graphic();
 
-      table.width = (window.innerWidth*80)/100;
-      table.height = (window.innerHeight*80)/100;
-      graphic.drawBoard(board, table);
-
-      document.onkeydown = (event) => {
-        if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
-          board.moveElems(event.key);
-          graphic.drawBoard(board, table);
         }
+          graphic.drawBoard(board, table);
+          board.moveElems(event.key);
+        if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
+
+      graphic.drawBoard(board, table);
+      table.height = (window.innerHeight*80)/100;
+      table.width = (window.innerWidth*80)/100;
+      document.onkeydown = (event) => {
+        graphic.drawBoard(board, table);
+        var requestUrl = ''
       }
     }
    </script>
