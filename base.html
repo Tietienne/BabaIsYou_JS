@@ -392,8 +392,14 @@
         
     window.onload = function() {
         console.log("onload !");
+        let level = 1, game = 1;
         let table = document.createElement("table");
         let canvas = document.getElementById("canvas");
+
+        while(level <= 3 || game == 1){
+            game = mainGame(level);
+            level++;
+        }
 
         function fillBoard(table){
             let board = [];
@@ -408,43 +414,47 @@
             return board;
         }
 
-        fetch('level3.json')
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw Error(response.statusText);
-            })
-            .then(object => {
-                for(let i = 0; i < object['lines'].length; i++){
-                    let tr = document.createElement("tr");
-                    tr.innerText = object['lines'][i];
-                    table.appendChild(tr);
-                }
-                let tab = fillBoard(table);
+        function mainGame(level) {
+            fetch('level' + level + '.json')
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw Error(response.statusText);
+                })
+                .then(object => {
+                    for (let i = 0; i < object['lines'].length; i++) {
+                        let tr = document.createElement("tr");
+                        tr.innerText = object['lines'][i];
+                        table.appendChild(tr);
+                    }
+                    let tab = fillBoard(table);
 
-                let board = new Board(tab, object['width']);
-                let graphic = new Graphic();
+                    let board = new Board(tab, object['width']);
+                    let graphic = new Graphic();
 
-                canvas.height = (window.innerHeight * 80) / 100;
-                canvas.width = (window.innerWidth * 80) / 100;
-                graphic.drawBoard(board, canvas);
+                    canvas.height = (window.innerHeight * 80) / 100;
+                    canvas.width = (window.innerWidth * 80) / 100;
+                    graphic.drawBoard(board, canvas);
 
-                document.onkeydown = (event) => {
-                    if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
-                        board.moveElems(event.key);
-                        graphic.drawBoard(board, canvas);
-                        if (board.win()) {
-                          console.log("Victoire !");
-                          document.onkeydown = undefined;
-                        }
-                        if (board.isOver()) {
-                          console.log("Défaite !");
-                          document.onkeydown = undefined;
+                    document.onkeydown = (event) => {
+                        if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
+                            board.moveElems(event.key);
+                            graphic.drawBoard(board, canvas);
+                            if (board.win()) {
+                                console.log("Victoire !");
+                                document.onkeydown = undefined;
+                                return 1;
+                            }
+                            if (board.isOver()) {
+                                console.log("Défaite !");
+                                document.onkeydown = undefined;
+                                return 0;
+                            }
                         }
                     }
-                }
-            })
+                })
+            }
         }
 
    </script>
