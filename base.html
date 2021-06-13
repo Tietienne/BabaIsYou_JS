@@ -348,7 +348,7 @@
         img.src = "pictures/"+name+".gif";
         let mid_height = (context.canvas.height - 24 * line) / 2;
         let mid_width = (context.canvas.width - 24 * column) / 2;
-        img.onload = () => context.drawImage(img, mid_height + j * 24, mid_width + i * 24);
+        img.onload = () => context.drawImage(img, j * 24, i * 24);
       }
 
       cleanBoard(table) {

@@ -486,11 +486,16 @@ public class JExpress {
         res.type("text/javascript", "utf-8").sendFile(Paths.get(text));  
       } else if (text.endsWith(".json")) {
       	out.println("serve json " + text);
-        res.type("application/json", "utf-8").sendFile(Paths.get(text));  
+        res.type("application/json", "utf-8").sendFile(Paths.get(text));
       } else {
       	res.status(404).type("text/html", "utf-8").send("<html>unknown resource " + text + "</html>");
       }
     });
+    
+    app.get("/pictures/:name", (req, res) -> {
+        out.println("serve image " + req.param("name"));
+        res.type("image/gif", "utf-8").sendFile(Paths.get("pictures/" + req.param("name")));
+      });
     
     app.get("/api/ticker", (req, res) -> {
     	out.println("get all tickers " + tickers);
