@@ -361,57 +361,54 @@
         console.log("onload !");
         let table = document.getElementById("board");
 
-        function readJson(file) {
-            fetch(file)
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw Error(response.statusText);
-                })
-                .then(object => {
-                    for(let i = 0; i < object['lines'].length; i++){
-                        let tr = document.createElement("tr");
-                        for(let j = 0; j < object['lines'][i]['elements'].length; j++){
-                            let td = document.createElement("td");
-                            td.innerText = object['lines'][i]['elements'][j];
-                            tr.append(td);
-                        }
-                        table.appendChild(tr);
-                    }
-                })
-        }
-
-        function fillBoard(){
+        function fillBoard(table){
             let board = [];
 
             for(let i = 0; i < table.children.length; i++){
-                board.concat(new BoardElem(table.children[i]));
+                if(table.children[i].textContent == "")
+                    board[i] = [];
+                else
+                    board[i] = [new BoardElem(table.children[i].textContent)];
             }
 
             return board;
         }
 
-        readJson('level.json');
+        fetch('level.json')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw Error(response.statusText);
+            })
+            .then(object => {
+                for(let i = 0; i < object['lines'].length; i++){
+                    for(let j = 0; j < object['lines'][i]['elements'].length; j++){
+                        let tr = document.createElement("tr");
+                        tr.innerText = object['lines'][i]['elements'][j];
+                        table.appendChild(tr);
+                    }
+                }
+                let tab = fillBoard(table);
+                console.log(tab);
 
-        let tab = fillBoard();
+                let board = new Board(tab, 33);
+                let graphic = new Graphic();
 
-        // Lancement du jeu //
+                table.height = (window.innerHeight * 80) / 100;
+                table.width = (window.innerWidth * 80) / 100;
+                graphic.drawBoard(board, table);
 
-        let board = new Board(tab, 33);
-        let graphic = new Graphic();
+                /*document.onkeydown = (event) => {
+                    if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
+                        board.moveElems(event.key);
+                        graphic.drawBoard(board, table);
+                    }
+                }*/
 
-        table.height = (window.innerHeight * 80) / 100;
-        table.width = (window.innerWidth * 80) / 100;
-        graphic.drawBoard(board, table);
-
-        document.onkeydown = (event) => {
-          if (event.key == "ArrowUp" || event.key == "ArrowDown" || event.key == "ArrowLeft" || event.key == "ArrowRight") {
-            board.moveElems(event.key);
-            graphic.drawBoard(board, table);
-          }
+            })
         }
-    }
+
    </script>
    <title> Baba Is You </title>
  </head>
