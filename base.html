@@ -31,7 +31,8 @@
       WALL: "Wall_Name",
       WATER: "Water_Name",
       ROCK: "Rock_Name",
-      FLOOR: "Floor_Name"
+      FLOOR: "Floor_Name",
+      GRASS: "Grass_Name"
     }
 
     const PlayEnum = {
@@ -40,13 +41,13 @@
       WALL: "Wall_Play",
       WATER: "Water_Play",
       ROCK: "Rock_Play",
-      FLOOR: "Floor_Play"     
+      FLOOR: "Floor_Play",
+      GRASS: "Grass_Play"   
     }
 
     class Board {
       constructor(board, lineLength) {
-        // Lecture du JSON
-        this.board = board; // Tableau de tableau de BoardElem : exemple - [[BaBa, Flower], [], [Lava], [Baba_Name]]
+        this.board = board;
         this.lineLength = lineLength;
         this.rules = new Rules();
         this.rules.checkRules(board, lineLength);
